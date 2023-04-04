@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, flash
 from .controlers.productsControler import *
+from .controlers.ordersControler import *
 
 views = Blueprint('views', __name__, template_folder='templates/client/')
 
@@ -29,9 +30,19 @@ def shop():
 def profile():
     return render_template('profile.html')
 
-@views.route('/orders')
+@views.route('/orders', methods = ['GET', 'POST'])
 def orders():
+
+    orders = getAllOrders()
+
+    order_id = getorderid()
+
+    tracking_num = get_trackingnum()
+
+    total = 1
+
     return render_template('orders.html')
+     
 
 @views.route('/checkout')
 def checkout():
