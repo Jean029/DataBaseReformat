@@ -1,6 +1,8 @@
 from flask import Blueprint, redirect, render_template, request, flash, url_for
-from .models.customersModel import Customer
+from .models.usermodel import User
+from .controlers.usercontroler import *
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import login_user, login_required, logout_user, current_user
 from . import dataBase
 
 auth = Blueprint('auth', __name__, template_folder='templates/client/')
@@ -11,11 +13,12 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
 
-        customer = Customer.query.filter_by(Customer_Email = email ).first()
-
-        if customer:
-            if check_password_hash(customer.Customer_Password, password):
+        customer = checkForCustomer(email)
+        if 1 in customer:
+            customer = getUser(email)
+            if check_password_hash(customer.Password, password):
                 flash('logged in succesfully', category='success')
+                setLoginUser(customer)
                 return redirect(url_for('views.shop'))
             else:
                 flash('Inconrrect password, try again.', category='error')
@@ -36,8 +39,8 @@ def register():
         pass1 = request.form.get('pass1')
         pass2 = request.form.get('pass2')
 
-        customers = Customer.query.filter_by(Customer_Email = email).first()
-        if customers:
+        customer = checkForCustomer(email)
+        if 1 in customer:
             flash('Email already exist.', category='error')
         elif len(email) < 4:
             flash('Email must be graater than 3 characters.', category='error')
@@ -48,16 +51,22 @@ def register():
         elif len(pass1) < 5:
             flash('password is to short.', category='error')
         else:
-            new_user = Customer(
-                Customer_Fname = fname,
-                Customer_Lname = lname,
-                Customer_Email = email,
-                Customer_Password = generate_password_hash(pass1, method= 'sha256')
+            new_user = User(
+                Fname = fname,
+                Lname = lname,
+                Email = email,
+                Password = generate_password_hash(pass1, method= 'sha256')
             )  
                                         
             dataBase.session.add(new_user)
             dataBase.session.commit()
             flash('Account created', category='success')
+            setLoginUser(new_user)
             return redirect(url_for('views.shop'))
     return render_template('register.html')
 
+@auth.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('auth.login'))

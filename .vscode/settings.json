@@ -1,5 +1,12 @@
 {
-    "githubPullRequests.ignoredPullRequestBranches": [
-        "main"
-    ]
+  "githubPullRequests.ignoredPullRequestBranches": ["main"],
+  "sqltools.useNodeRuntime": true,
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "Nebula",
+      "database": "${workspaceFolder:DataBaseReformat}/instance/NebulaDataBase.db"
+    }
+  ]
 }

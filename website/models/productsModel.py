@@ -1,7 +1,7 @@
 from .. import dataBase
 
 class Telescopes(dataBase.Model):
-    id = dataBase.Column(dataBase.Integer, primary_key = True)
+    id = dataBase.Column(dataBase.Integer, primary_key = True, autoincrement = True)
     name = dataBase.Column(dataBase.String(255), nullable = False)
     brand = dataBase.Column(dataBase.String(255), nullable = False)
     description = dataBase.Column(dataBase.String(255), nullable = True)

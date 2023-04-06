@@ -4,7 +4,6 @@ from datetime import datetime
 
 
 class Order(dataBase.Model):
-    __tablename__ = 'orders'
     order_id = dataBase.Column(dataBase.Integer, primary_key=True, autoincrement=True)
     tracking_num = dataBase.Column(dataBase.Integer, primary_key=False, autoincrement=True)
     order_date = dataBase.Column(dataBase.DateTime(timezone=True), default=func.now(), nullable=False)
@@ -19,7 +18,6 @@ class Order(dataBase.Model):
 
 
 class Transaction(dataBase.Model):
-    __tablename__ = 'transactions'
     id = dataBase.Column(dataBase.Integer, primary_key=True)
     order_id = dataBase.Column(dataBase.Integer, dataBase.ForeignKey('orders.id'))
     amount = dataBase.Column(dataBase.Float)
