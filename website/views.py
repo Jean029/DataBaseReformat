@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, flash
 from flask_login import current_user, login_required
 from .controlers.usercontroler import *
 from .controlers.productsControler import *
+from .controlers.ordersControler import *
 
 views = Blueprint('views', __name__, template_folder='templates/client/')
 
@@ -32,10 +33,20 @@ def shop():
 def profile():
     return render_template('profile.html', user = current_user)
 
-@views.route('/orders')
+@views.route('/orders', methods = ['GET', 'POST'])
 @login_required
 def orders():
+
+    orders = getAllOrders()
+
+    order_id = getorderid()
+
+    tracking_num = get_trackingnum()
+
+    total = 1
+
     return render_template('orders.html', user = current_user)
+     
 
 @views.route('/checkout')
 @login_required
