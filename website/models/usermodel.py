@@ -15,3 +15,4 @@ class User(dataBase.Model, UserMixin):
     State = dataBase.Column(dataBase.String(255), default='')
     Phone = dataBase.Column(dataBase.Numeric(precision=10), default = 0)
     Status = dataBase.Column(dataBase.Integer, default=1)
+    customerOrder = dataBase.relationship('customerOrder')
