@@ -18,3 +18,4 @@ class User(dataBase.Model, UserMixin):
     Phone = dataBase.Column(dataBase.Numeric(precision=10), default = 0)
     Status = dataBase.Column(dataBase.Integer, default=1)
     cart = dataBase.relationship('Cart')
+    customerOrder = dataBase.relationship('customerOrder')

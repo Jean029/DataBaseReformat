@@ -22,6 +22,8 @@ def create_app():
     from .views import views
     from .auth import auth
     from .models.usermodel import User
+   
+
     
     
     app.register_blueprint(views, url_prefix='/')
