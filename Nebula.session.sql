@@ -1,1 +1,1 @@
-DROP TABLE user
+DELETE FROM user WHERE Fname = "jean"

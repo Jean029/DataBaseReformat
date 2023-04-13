@@ -15,12 +15,3 @@ class Order(dataBase.Model):
     payment_method = dataBase.Column(dataBase.String(150), nullable=False)
     status = dataBase.Column(dataBase.String(150), nullable=False, default='Pending')
     order_prods = dataBase.Column(dataBase.Integer, nullable=False)
-
-
-class Transaction(dataBase.Model):
-    id = dataBase.Column(dataBase.Integer, primary_key=True)
-    order_id = dataBase.Column(dataBase.Integer, dataBase.ForeignKey('orders.id'))
-    amount = dataBase.Column(dataBase.Float)
-    date = dataBase.Column(dataBase.DateTime, default=datetime.utcnow)
-    quantity = dataBase.Column(dataBase.Integer,nullable=False)
-    

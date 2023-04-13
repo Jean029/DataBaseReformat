@@ -1,9 +1,8 @@
 from flask import Blueprint, redirect, render_template, request, flash, url_for
-from .models.usermodel import User
 from .controlers.usercontroler import *
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_user, login_required, logout_user, current_user
-from . import dataBase
+from .controlers.cartcontroler import *
+from werkzeug.security import check_password_hash
+from flask_login import login_required, logout_user
 
 auth = Blueprint('auth', __name__, template_folder='templates/client/')
 
@@ -51,17 +50,9 @@ def register():
         elif len(pass1) < 5:
             flash('password is to short.', category='error')
         else:
-            new_user = User(
-                Fname = fname,
-                Lname = lname,
-                Email = email,
-                Password = generate_password_hash(pass1, method= 'sha256')
-            )  
-                                        
-            dataBase.session.add(new_user)
-            dataBase.session.commit()
+            CreateAccount(fname, lname, email, pass1)
+            CreateCart()
             flash('Account created', category='success')
-            setLoginUser(new_user)
             return redirect(url_for('views.shop'))
     return render_template('register.html')
 

@@ -1,7 +1,9 @@
 from .. import dataBase
 from flask_login import UserMixin
+from .cartmodel import Cart
 
 class User(dataBase.Model, UserMixin):
+    __tablename__ = 'user'
     id = dataBase.Column(dataBase.Integer, primary_key = True, autoincrement=True)
     Fname = dataBase.Column(dataBase.String(100), nullable = False)
     Lname = dataBase.Column(dataBase.String(100), nullable = False)
@@ -15,3 +17,4 @@ class User(dataBase.Model, UserMixin):
     State = dataBase.Column(dataBase.String(255), default='')
     Phone = dataBase.Column(dataBase.Numeric(precision=10), default = 0)
     Status = dataBase.Column(dataBase.Integer, default=1)
+    cart = dataBase.relationship('Cart')

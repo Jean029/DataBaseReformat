@@ -122,6 +122,7 @@
             <button><i class="fas fa-search"></i></button>
           </form>
 
+          {% if user.is_authenticated %}
           <div class="header-widget-group">
             <button class="header-widget header-cart" title="Cartlist">
               <i class="fas fa-shopping-basket"></i>
@@ -130,6 +131,7 @@
               <span>total price<small>${{total}}0</small></span>
             </button>
           </div>
+          {% endif %}
         </div>
       </div>
     </header>
@@ -144,16 +146,16 @@
       <div class="cart-header">
         <div class="cart-total">
           <i class="fas fa-shopping-basket"></i>
-          <span>total item (3)</span>
+          <span>total item ({{total_items}})</span>
         </div>
         <button class="cart-close"><i class="icofont-close"></i></button>
       </div>
       <ul class="cart-list">
-        {% if session['cart'] %} {% for key, item in session['cart'].items() %}
+        {% if user.is_authenticated %} {% for item in items %}
         <li class="cart-item">
           <div class="cart-media">
             <a href="#"><img src="{{item['image']}}" alt="product" /></a>
-            <form action="{{url_for('delete', id=key)}}">
+            <form action="{{url_for('views.shop')}}">
               <button class="cart-delete">
                 <i class="far fa-trash-alt"></i>
               </button>
@@ -161,8 +163,8 @@
           </div>
           <div class="cart-info-group">
             <div class="cart-info">
-              <h6><a href="product-single.html">{{item['name']}}</a></h6>
-              <p>Unit Price - {{item['price']}}</p>
+              <h6><a href="product-single.html">{{item}}</a></h6>
+              <p>Unit Price - 0</p>
             </div>
             <div class="cart-action-group">
               <div class="product-action">
@@ -180,10 +182,10 @@
                   <i class="icofont-plus"></i>
                 </button>
               </div>
-              <form action="{{url_for('editcart')}}" method="post">
+              <form action="{{url_for('views.shop')}}" method="post">
                 <button class="action">Edit</button>
               </form>
-              <h6>${{item['total_price']}}</h6>
+              <h6>$0</h6>
             </div>
           </div>
         </li>
@@ -192,11 +194,10 @@
       <div class="cart-footer">
         <a class="cart-checkout-btn" href="{{url_for('views.checkout')}}">
           <span class="checkout-label">Proceed to Checkout</span>
-          <span class="checkout-price">${{total}}</span>
+          <span class="checkout-price">${{cart.total}}</span>
         </a>
       </div>
     </aside>
-
     <!--=====================================
                     CART SIDEBAR PART END
         =======================================-->
