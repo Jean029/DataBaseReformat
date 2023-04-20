@@ -82,9 +82,6 @@ def shop():
 @views.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    cart = None
-    cart_items = None
-    total_items = None
     name = getCardName()
     number = getCardNumber()
     type = getCardType()
@@ -93,7 +90,7 @@ def profile():
 
     cart = getCart()
     cart_items = json.loads(cart.items)
-    total = float(cart.total_price)
+    total_items = float(cart.total_price)
 
     if request.method == "POST":
         fname = request.form.get('fname')
