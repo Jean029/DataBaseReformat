@@ -42,6 +42,8 @@ def shop():
         checkedLens = request.form.getlist('lens')
         checkedMount = request.form.getlist('mount')
 
+        print(checkedBrands, checkedLens, checkedMount)
+
         if aperture[0] == '':
             aperture[0] = getMinAperture()[0]
 
