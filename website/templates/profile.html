@@ -24,6 +24,7 @@ block content %}
                     class="form-control"
                     type="text"
                     placeholder="{{user.Fname}}"
+                    disabled
                   />
                 </div>
               </div>
@@ -34,6 +35,7 @@ block content %}
                     class="form-control"
                     type="text"
                     placeholder="{{user.Lname}}"
+                    disabled
                   />
                 </div>
               </div>
@@ -44,14 +46,15 @@ block content %}
                     class="form-control"
                     type="email"
                     placeholder="{{user.Email}}"
+                    disabled
                   />
                 </div>
               </div>
-              <div class="col-lg-2">
+              <!-- <div class="col-lg-2">
                 <div class="profile-btn">
                   <a href="#">change password</a>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -151,7 +154,7 @@ block content %}
           <input
             class="form-control"
             name="number"
-            type="number"
+            type="tel"
             value="{{user.Phone}}"
           />
         </div>
@@ -336,6 +339,7 @@ block content %}
             name="email"
             type="text"
             value="{{user.Email}}"
+            disabled
           />
         </div>
         <input type="hidden" name="page" id="page" value="/profile" />
