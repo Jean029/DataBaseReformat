@@ -6,9 +6,10 @@ from .controlers.ordersControler import *
 from .controlers.cartcontroler import *
 from .controlers.paymentController import *
 from .controlers.customerOrderControler import *
+from .controlers.profilecontroler import *
 import json
 
-views = Blueprint('views', __name__, template_folder='templates/client/')
+views = Blueprint('views', __name__, template_folder='templates/')
 
 
 @views.route('/')
@@ -40,6 +41,8 @@ def shop():
         checkedBrands = request.form.getlist('brand')
         checkedLens = request.form.getlist('lens')
         checkedMount = request.form.getlist('mount')
+
+        print(checkedBrands, checkedLens, checkedMount)
 
         if aperture[0] == '':
             aperture[0] = getMinAperture()[0]
@@ -81,123 +84,113 @@ def shop():
 @views.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    cart = None
-    cart_items = None
-    total_items = None
     name = getCardName()
     number = getCardNumber()
     type = getCardType()
     month = getMonth()
     year = getYear()
-    
+
     cart = getCart()
     cart_items = json.loads(cart.items)
-    total = float(cart.total_price)
- 
-        
-    
-    if request.method == "POST":    
+    total_items = float(cart.total_price)
+
+    if request.method == "POST":
         fname = request.form.get('fname')
         if fname == None:
-            fname = User.Fname
-        else:    
-            dataBase.session.execute(text(f"UPDATE user SET Fname = '{fname}' WHERE id = {current_user.id}"))
-          
+            fname = current_user.Fname
+        else:
+            setFname(fname)
+
         lname = request.form.get('lname')
         if lname == None:
-            lname = User.Lname
-        else:    
-            dataBase.session.execute(text(f"UPDATE user SET Lname = '{fname}' WHERE id = {current_user.id}"))
-          
+            lname = current_user.Lname
+        else:
+            setLname(lname)
+
         email = request.form.get('email')
         if email == None:
-            email = User.Email
-        else:    
-            dataBase.session.execute(text(f"UPDATE User SET Email = '{email}' WHERE id = {current_user.id}"))
-        
+            email = current_user.Email
+        else:
+            setEmail(email)
+
         number = request.form.get('number')
         if number == None:
-            number = User.Phone
-        else:    
-            dataBase.session.execute(text(f"UPDATE user SET Phone = '{number}' WHERE id = {current_user.id}"))
-            
+            number = current_user.Phone
+        else:
+            setNumber(number)
+
         aline1 = request.form.get('aline1')
         if aline1 == None:
-            aline1 = User.Address
+            aline1 = current_user.Address
         else:
-            dataBase.session.execute(text(f"UPDATE user SET Address = '{aline1}' WHERE id = {current_user.id}"))
-            
+            setAline1(aline1)
+
         aline2 = request.form.get('aline2')
         if aline2 == None:
-            aline2 = User.Street
+            aline2 = current_user.Street
         else:
-            dataBase.session.execute(text(f"UPDATE user SET Street = '{aline2}' WHERE id = {current_user.id}"))
-        
+            setAline2(aline2)
+
         city = request.form.get('city')
         if city == None:
-            city = User.City
+            city = current_user.City
         else:
-            dataBase.session.execute(text(f"UPDATE user SET City = '{city}' WHERE id = {current_user.id}"))
-            
+            setCity(city)
+
         state = request.form.get('state')
         if state == None:
-            state = User.State
+            state = current_user.State
         else:
-            dataBase.session.execute(text(f"UPDATE user SET State = '{state}' WHERE id = {current_user.id}"))
-            
+            setState(state)
 
         zipcode = request.form.get('zipcode')
         if zipcode == None:
-            zipcode = User.ZipCode
+            zipcode = current_user.ZipCode
         else:
-            dataBase.session.execute(text(f"UPDATE user SET ZipCode = '{zipcode}' WHERE id = {current_user.id}"))
-            
-            
-        
+            setZipCode(zipcode)
+
         cname = request.form.get('card_name')
         if cname == None:
             cname = getCardName()
         else:
-            dataBase.session.execute(text(f"UPDATE payment SET name = '{cname}' WHERE id = {current_user.id}"))
+            setCname(cname)
 
         ctype = request.form.get('card_type')
         if ctype == None:
             ctype = getCardType()
         else:
-            dataBase.session.execute(text(f"UPDATE payment SET type = '{ctype}' WHERE id = {current_user.id}"))
+            setCtype(ctype)
 
         cnumber = request.form.get('card_num')
         if cnumber == None:
-            cnumber = getCardNumber
+            cnumber = getCardNumber()
         else:
-            dataBase.session.execute(text(f"UPDATE payment SET number = '{cnumber}' WHERE id = {current_user.id}"))
+            setCnumber(cnumber)
 
         month = request.form.get('month')
         if month == None:
             month = getMonth()
         else:
-            dataBase.session.execute(text(f"UPDATE payment SET month = '{month}' WHERE id = {current_user.id}"))
-        
+            setMonth(month)
+
         year = request.form.get('year')
         if year == None:
             year = getYear()
         else:
-            dataBase.session.execute(text(f"UPDATE payment SET year = '{year}' WHERE id = {current_user.id}"))
+            setYear(year)
 
-
-        dataBase.session.commit()        
+        dataBase.session.commit()
         return redirect(url_for('views.profile'))
 
-
-    return render_template('profile.html', user = current_user,
-                           cart = cart,
-                           items = cart_items,
-                           total_items = total_items,
-                           name = name, 
-                           number = number,
-                           type = type,
-                           month = month,
-                           year = year
+    return render_template('profile.html', user=current_user,
+                           cart=cart,
+                           items=cart_items,
+                           total_items=total_items,
+                           name=name,
+                           number=number,
+                           type=type,
+                           month=month,
+                           year=year
                            )
 
 
@@ -208,21 +201,18 @@ def orders():
     order_id = getorderid()
     tracking_num = get_trackingnum()
     total = 1
-    
-    
-    
+
     cart = getCart()
     cart_items = json.loads(cart.items)
     total = float(cart.total_price)
- 
 
     return render_template('orders.html', user=current_user,
                            orders=orders,
                            order_id=order_id,
                            tracking_num=tracking_num,
                            total=total,
-                           cart = cart,
-                           cart_items = cart_items)
+                           cart=cart,
+                           cart_items=cart_items)
 
 
 @views.route('/checkout',  methods=['GET', 'POST'])
@@ -231,122 +221,113 @@ def checkout():
     cart = None
     cart_items = None
     total_items = None
-  
+
     cart = getCart()
     cart_items = json.loads(cart.items)
     total = float(cart.total_price)
 
-        
     name = getCardName()
     number = getCardNumber()
     type = getCardType()
     month = getMonth()
     year = getYear()
-    
-    
-    if request.method == "POST":    
+
+    if request.method == "POST":
         fname = request.form.get('fname')
         if fname == None:
             fname = User.Fname
-        else:    
-            dataBase.session.execute(text(f"UPDATE user SET Fname = '{fname}' WHERE id = {current_user.id}"))
-            
+        else:
+            setFname(fname)
+
         lname = request.form.get('lname')
         if lname == None:
             lname = User.Lname
-        else:    
-            dataBase.session.execute(text(f"UPDATE user SET Lname = '{fname}' WHERE id = {current_user.id}"))
-            
+        else:
+            setLname(lname)
+
         email = request.form.get('email')
         if email == None:
             email = User.Email
-        else:    
-            dataBase.session.execute(text(f"UPDATE user SET Email = '{email}' WHERE id = {current_user.id}"))
-        
+        else:
+            setEmail(email)
+
         number = request.form.get('number')
         if number == None:
             number = User.Phone
-        else:    
-            dataBase.session.execute(text(f"UPDATE user SET Phone = '{number}' WHERE id = {current_user.id}"))
-            
+        else:
+            setNumber(number)
+
         aline1 = request.form.get('aline1')
         if aline1 == None:
             aline1 = User.Address
         else:
-            dataBase.session.execute(text(f"UPDATE user SET Address = '{aline1}' WHERE id = {current_user.id}"))
-            
+            setAline1(aline1)
+
         aline2 = request.form.get('aline2')
         if aline2 == None:
             aline2 = User.Street
         else:
-            dataBase.session.execute(text(f"UPDATE user SET Street = '{aline2}' WHERE id = {current_user.id}"))
-        
+            setAline2(aline2)
+
         city = request.form.get('city')
         if city == None:
             city = User.City
         else:
-            dataBase.session.execute(text(f"UPDATE user SET City = '{city}' WHERE id = {current_user.id}"))
-            
+            setCity(city)
+
         state = request.form.get('state')
         if state == None:
             state = User.State
         else:
-            dataBase.session.execute(text(f"UPDATE user SET State = '{state}' WHERE id = {current_user.id}"))
-            
+            setState(state)
 
         zipcode = request.form.get('zipcode')
         if zipcode == None:
             zipcode = User.ZipCode
         else:
-            dataBase.session.execute(text(f"UPDATE user SET ZipCode = '{zipcode}' WHERE id = {current_user.id}"))
-            
-            
-        
+            setZipCode(zipcode)
+
         cname = request.form.get('card_name')
         if cname == None:
             cname = getCardName()
         else:
-            dataBase.session.execute(text(f"UPDATE payment SET name = '{cname}' WHERE id = {current_user.id}"))
+            setCname(cname)
 
         ctype = request.form.get('card_type')
         if ctype == None:
             ctype = getCardType()
         else:
-            dataBase.session.execute(text(f"UPDATE payment SET type = '{ctype}' WHERE id = {current_user.id}"))
+            setCtype(ctype)
 
         cnumber = request.form.get('card_num')
         if cnumber == None:
             cnumber = getCardNumber
         else:
-            dataBase.session.execute(text(f"UPDATE payment SET number = '{cnumber}' WHERE id = {current_user.id}"))
+            setCnumber(cnumber)
 
         month = request.form.get('month')
         if month == None:
             month = getMonth()
         else:
-            dataBase.session.execute(text(f"UPDATE payment SET month = '{month}' WHERE id = {current_user.id}"))
-        
+            setMonth(month)
+
         year = request.form.get('year')
         if year == None:
             year = getYear()
         else:
-            dataBase.session.execute(text(f"UPDATE payment SET year = '{year}' WHERE id = {current_user.id}"))
-
-
-        dataBase.session.commit()        
+            setYear(year)
+        dataBase.session.commit()
         return redirect(url_for('views.checkout'))
 
-
-    
-    return render_template('checkout.html', user = current_user,
-                            cart = cart,
-                            items = cart_items,
-                            total_items = total_items,
-                            name = name,
-                            number = number,
-                            type = type,
-                            month = month,
-                            year = year )
+    return render_template('checkout.html', user=current_user,
+                           cart=cart,
+                           items=cart_items,
+                           total_items=total_items,
+                           name=name,
+                           number=number,
+                           type=type,
+                           month=month,
+                           year=year)
 
 
 @views.route('/invoice', methods=['GET', 'POST'])
@@ -359,21 +340,20 @@ def invoice():
     order_date = getOrderDate()
     total_amount = 100
     payment_method = "credit card"
-   
+
     cart = getCart()
     cart_items = json.loads(cart.items)
     total = float(cart.total_price)
-
 
     return render_template('invoice.html', user=current_user,
                            orders=orders,
                            cart=cart,
                            items=cart_items,
                            total=total,
-                           tracking_number = tracking_number,
-                           order_date = order_date,
-                           total_amount = total_amount,
-                           payment_method = payment_method
+                           tracking_number=tracking_number,
+                           order_date=order_date,
+                           total_amount=total_amount,
+                           payment_method=payment_method
                            )
 
 
