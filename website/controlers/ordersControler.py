@@ -9,6 +9,7 @@ import random
 
 order_date = datetime.datetime.strptime('2023-04-17 10:30:00', '%Y-%m-%d %H:%M:%S')
 
+
 #para obtener los order id de ordenes de el usuario
 def getUserOrders():
     Uorders =  dataBase.session.execute(text(f"SELECT * FROM orders WHERE user_id = {current_user.id}"))
@@ -16,6 +17,8 @@ def getUserOrders():
 
 
 # para contar cuantas order tiene un usuario
+
+
 def countORders():
     result = dataBase.session.execute(text(f"SELECT COUNT(order_id) FROM orders WHERE user_id = {current_user.id}"))
     order_count = result.fetchone()[0]
@@ -43,25 +46,33 @@ def getOrderDate():
     return dataBase.session.execute(text('SELECT order_date FROM customer_order'))
 
 
-
 def getorderid():
     return dataBase.session.execute(text('SELECT DISTINCT order_id FROM orders'))
 
 # SQL para cambiar el total de la orden usando el id de la orden
+
+
 def uptd_ordert():
     return dataBase.session.execute(text('UPDATE orders SET c_total = total_c WHERE id = order_id'))
-                                         
+
 # Escoger una orden especifico de un usuario
+
+
 def sel_user_Ord():
-    return dataBase.session.execute(text('SELECT * FROM orders where user_id = user_id')) #Añadir el user que se quieren ver las ordenes
+    # Añadir el user que se quieren ver las ordenes
+    return dataBase.session.execute(text('SELECT * FROM orders where user_id = user_id'))
 
 # Escoger Ordenes dentro un rango de tiempo
+
+
 def esp_range_orders():
-    return dataBase.session.execute(text('SELECT * FROM orders WHERE order_date BETWEEN date1 AND date2')) 
+    return dataBase.session.execute(text('SELECT * FROM orders WHERE order_date BETWEEN date1 AND date2'))
 # Anadir los ranges a los cuales se les quiere buscar tales ordenes
+
 
 def get_trackingnum():
     return dataBase.session.execute(text('SELECT DISTINCT tracking_num FROM orders')).fetchone()
+
 
 def generar_tracking_fedex():
     # Generar número de seguimiento de 12 dígitos o 15 dígitos
@@ -109,12 +120,7 @@ def testdata():
                             payment_method = 'Visa',
                             status = 'Pending',
                             order_prods = 1)
+
     dataBase.session.add(new_Order)
     print(new_Order)
     dataBase.session.commit()
-
-
-
-
-
-
