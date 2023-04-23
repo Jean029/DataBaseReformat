@@ -6951,3 +6951,7 @@ tbody tr td:last-child {
 .cap{
   text-transform: capitalize;
 }
+
+.nose{
+  width: 16.6%;
+}
