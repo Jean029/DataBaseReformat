@@ -95,9 +95,8 @@ def profile():
     cart_items = json.loads(cart.items)
 
     total = float(cart.total_price)
- 
-    
-    if request.method == "POST":    
+
+    if request.method == "POST":
         fname = request.form.get('fname')
         if fname == None:
             fname = current_user.Fname
@@ -188,7 +187,6 @@ def profile():
     return render_template('profile.html', user=current_user,
                            cart=cart,
                            items=cart_items,
-                           total_items=total_items,
                            name=name,
                            number=number,
                            type=type,
@@ -205,25 +203,22 @@ def orders():
     orders = getUserOrders()
     data = getOrderItems()
 
-
     cart = getCart()
     cart_items = json.dumps(cart.items)
     if cart_items == "NULL":
         cart_items = []
-    #se debe cambiar al de las ordenes
+    # se debe cambiar al de las ordenes
     total = float(cart.total_price)
 
-    total_items = len(cart_items) 
+    total_items = len(cart_items)
 
-    
-    return render_template('orders.html', user = current_user,
-                            item = cart_items,
-                            cart = cart,
-                            count = Count,
-                            total_items = total_items,
-                            orders = orders,
-                            i = data)
-
+    return render_template('orders.html', user=current_user,
+                           item=cart_items,
+                           cart=cart,
+                           count=Count,
+                           total_items=total_items,
+                           orders=orders,
+                           i=data)
 
 
 @views.route('/checkout',  methods=['GET', 'POST'])
@@ -330,19 +325,17 @@ def checkout():
         dataBase.session.commit()
         return redirect(url_for('views.checkout'))
 
-    
-    return render_template('checkout.html', user = current_user,
-                            cart = cart,
-                            items = cart_items,
-                            total_items = total_items,
-                            name = name,
-                            number = number,
-                            type = type,
-                            month = month,
-                            year = year,
-                            total = total,
-                            cart_items = cart_items )
-
+    return render_template('checkout.html', user=current_user,
+                           cart=cart,
+                           items=cart_items,
+                           total_items=total_items,
+                           name=name,
+                           number=number,
+                           type=type,
+                           month=month,
+                           year=year,
+                           total=total,
+                           cart_items=cart_items)
 
 
 @views.route('/invoice', methods=['GET', 'POST'])
@@ -361,23 +354,21 @@ def invoice():
     total_amount = 100
     payment_method = "credit card"
 
-    
     cart = getCart()
     cart_items = json.loads(cart.items)
-    total = float(cart.total_price) 
-
+    total = float(cart.total_price)
 
     return render_template('invoice.html', user=current_user,
                            orders=orders,
                            cart=cart,
                            items=cart_items,
                            total=total,
-                           tracking_number = tracking_number,
-                           order_date = order_date,
-                           total_amount = total_amount,
-                           payment_method = payment_method,
-                           new_order = result,
-                           prods = prods)
+                           tracking_number=tracking_number,
+                           order_date=order_date,
+                           total_amount=total_amount,
+                           payment_method=payment_method,
+                           new_order=result,
+                           prods=prods)
 
 
 @login_required
