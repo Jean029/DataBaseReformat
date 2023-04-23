@@ -5,8 +5,9 @@ from .controlers.productsControler import *
 from .controlers.ordersControler import *
 from .controlers.cartcontroler import *
 from .controlers.paymentController import *
-from .controlers.customerOrderControler import *
+# from .controlers.customerOrderControler import *
 import json
+import pprint
 
 views = Blueprint('views', __name__, template_folder='templates/client/')
 
@@ -94,7 +95,6 @@ def profile():
     cart_items = json.loads(cart.items)
     total = float(cart.total_price)
  
-        
     
     if request.method == "POST":    
         fname = request.form.get('fname')
@@ -204,25 +204,26 @@ def profile():
 @views.route('/orders', methods=['GET', 'POST'])
 @login_required
 def orders():
-    orders = getAllOrders()
-    order_id = getorderid()
-    tracking_num = get_trackingnum()
-    total = 1
-    
-    
-    
-    cart = getCart()
-    cart_items = json.loads(cart.items)
-    total = float(cart.total_price)
- 
+    Count = countORders()
+    orders = getUserOrders()
+    data = getOrderItems()
 
-    return render_template('orders.html', user=current_user,
-                           orders=orders,
-                           order_id=order_id,
-                           tracking_num=tracking_num,
-                           total=total,
-                           cart = cart,
-                           cart_items = cart_items)
+    cart = getCart()
+    cart_items = json.dumps(cart.items)
+    if cart_items == "NULL":
+        cart_items = []
+    #se debe cambiar al de las ordenes
+    total = float(cart.total_price)
+    total_items = len(cart_items) 
+
+    
+    return render_template('orders.html', user = current_user,
+                            item = cart_items,
+                            cart = cart,
+                            count = Count,
+                            total_items = total_items,
+                            orders = orders,
+                            i = data)
 
 
 @views.route('/checkout',  methods=['GET', 'POST'])
@@ -231,7 +232,7 @@ def checkout():
     cart = None
     cart_items = None
     total_items = None
-  
+
     cart = getCart()
     cart_items = json.loads(cart.items)
     total = float(cart.total_price)
@@ -346,12 +347,19 @@ def checkout():
                             number = number,
                             type = type,
                             month = month,
-                            year = year )
+                            year = year,
+                            total = total,
+                            cart_items = cart_items )
 
 
 @views.route('/invoice', methods=['GET', 'POST'])
 @login_required
 def invoice():
+
+    result = create_order()
+    prods = json.loads(json.loads(result.order_prods))
+    # prods = getOrderItemsByNumber(result.tracking_num)
+
     cart = getCart()
     cart_items = json.loads(cart.items)
     total = float(cart.total_price)
@@ -359,11 +367,10 @@ def invoice():
     order_date = getOrderDate()
     total_amount = 100
     payment_method = "credit card"
-   
+    
     cart = getCart()
     cart_items = json.loads(cart.items)
-    total = float(cart.total_price)
-
+    total = float(cart.total_price) 
 
     return render_template('invoice.html', user=current_user,
                            orders=orders,
@@ -373,7 +380,9 @@ def invoice():
                            tracking_number = tracking_number,
                            order_date = order_date,
                            total_amount = total_amount,
-                           payment_method = payment_method
+                           payment_method = payment_method,
+                           new_order = result,
+                           prods = prods
                            )
 
 
